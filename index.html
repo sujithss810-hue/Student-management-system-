@@ -1,317 +1,305 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Student Management</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Student Database</title>
 
 <style>
 body{
-font-family:Arial;
-background:linear-gradient(135deg,#1e3c72,#2a5298);
-margin:0;
-padding:20px;
-color:#333;
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#ffffff;
 }
 
-h2{color:white;text-align:center;}
-
-.container{max-width:1000px;margin:auto;}
-
-.stats{
-background:white;
-padding:10px;
-text-align:center;
-margin-bottom:15px;
-border-radius:5px;
-font-weight:bold;
+h2{
+    text-align:center;
+    padding:15px;
+    letter-spacing:1px;
+    color:#00e5ff;
 }
 
-.form{
-background:white;
-padding:15px;
-margin-bottom:15px;
-border-radius:5px;
-display:flex;
-flex-wrap:wrap;
-gap:10px;
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:15px;
 }
 
-.form-group{
-display:flex;
-flex-direction:column;
+form{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:8px;
+    background:#16222a;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(0,229,255,0.3);
 }
 
 input,select{
-padding:6px;
-border:1px solid #ccc;
-border-radius:4px;
-min-width:150px;
+    padding:8px;
+    border:1px solid #00e5ff;
+    border-radius:6px;
+    background:#0f2027;
+    color:#fff;
+    font-size:13px;
+    outline:none;
+}
+
+input:focus,select:focus{
+    box-shadow:0 0 8px #00e5ff;
 }
 
 button{
-padding:6px 10px;
-border:none;
-border-radius:4px;
-cursor:pointer;
+    padding:8px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+    background:#00e5ff;
+    color:#000;
+    transition:0.3s;
 }
 
-.add-btn{background:#2a5298;color:white;}
-.edit-btn{background:orange;color:white;}
-.delete-btn{background:red;color:white;}
+button:hover{
+    background:#00bcd4;
+}
 
 table{
-width:100%;
-border-collapse:collapse;
-background:white;
+    width:100%;
+    margin-top:20px;
+    border-collapse:collapse;
+    background:#16222a;
+    font-size:12px;
 }
 
 th,td{
-border:1px solid #ddd;
-padding:6px;
-text-align:center;
+    padding:7px;
+    border:1px solid #0f2027;
+    text-align:center;
 }
 
 th{
-background:#2a5298;
-color:white;
+    background:#00bcd4;
+    color:#000;
 }
 
-.message{
-position:fixed;
-top:20px;
-right:20px;
-background:#ff9800;
-color:white;
-padding:10px;
-border-radius:5px;
-display:none;
-font-weight:bold;
+tr:nth-child(even){
+    background:#1e2d38;
 }
 
-#search{
-padding:6px;
-width:200px;
-border-radius:4px;
-border:1px solid #ccc;
+.edit{
+    background:#4caf50;
+    color:#fff;
+    padding:4px 6px;
+}
+
+.del{
+    background:#f44336;
+    color:#fff;
+    padding:4px 6px;
+}
+
+@media(max-width:600px){
+    table{font-size:9px;}
 }
 </style>
 </head>
 
 <body>
 
-<h2>Student Management System</h2>
+<h2>Student Database Management</h2>
 
 <div class="container">
 
-<div class="stats">
-Total Students: <span id="totalCount">0</span>
-</div>
+<form id="f">
 
-<div class="form">
+<input id="n" placeholder="Name" required>
+<input type="date" id="dob" required>
+<input id="age" placeholder="Age" readonly>
 
-<div class="form-group">
-<label>First Name</label>
-<input type="text" id="name">
-</div>
-
-<div class="form-group">
-<label>Age</label>
-<input type="text" id="age" readonly onclick="checkDOB()">
-</div>
-
-<div class="form-group">
-<label>Date of Birth</label>
-<input type="date" id="dob" onchange="calculateAge()">
-</div>
-
-<div class="form-group">
-<label>UG Number</label>
-<input type="text" id="roll">
-</div>
-
-<div class="form-group">
-<label>Email</label>
-<input type="email" id="email">
-</div>
-
-<div class="form-group">
-<label>Phone</label>
-<input type="tel" id="phone">
-</div>
-
-<div class="form-group">
-<label>Location</label>
-<input type="text" id="location">
-</div>
-
-<div class="form-group">
-<label>Course</label>
 <select id="course">
-<option value="">Select</option>
-<option>BCA</option>
-<option>BBA</option>
-<option>BTech</option>
-<option>BCOM</option>
-<option>BSC</option>
-<option>BA</option>
-<option>BE</option>
-<option>MCA</option>
-<option>MBA</option>
-<option>MTECH</option>
-<option>MCOM</option>
-<option>MSC</option>
-<option>MA</option>
-<option>ME</option>
+<option value="">Select Course (Optional)</option>
+<option>BCA</option><option>BSc</option><option>BCom</option>
+<option>BA</option><option>BBA</option><option>BE</option>
+<option>BTech</option><option>MCA</option><option>MSc</option>
+<option>MCom</option><option>MA</option><option>MBA</option>
+<option>Diploma</option><option>Pharmacy</option><option>Nursing</option>
 </select>
-</div>
 
-<button class="add-btn" onclick="addStudent()">Add</button>
+<input id="ugno" placeholder="UG No" required>
+<input id="year" placeholder="Passing Year" required>
 
-</div>
+<!-- Attendance validation added -->
+<input type="number" id="att" placeholder="Attendance %" min="0" max="100" required>
 
-<input type="text" id="search" placeholder="Search..." onkeyup="searchStudent()">
-<br><br>
+<select id="gen" required>
+<option value="">Select Gender</option>
+<option>Male</option>
+<option>Female</option>
+<option>Other</option>
+</select>
+
+<input id="ph" placeholder="Phone No" required>
+<input id="em" placeholder="Email" required>
+<input id="loc" placeholder="Location" required>
+
+<button id="btn">Add Student</button>
+
+</form>
 
 <table>
 <thead>
 <tr>
 <th>Name</th>
+<th>Date of Birth</th>
 <th>Age</th>
-<th>DOB</th>
-<th>UG Number</th>
-<th>Email</th>
-<th>Phone</th>
-<th>Location</th>
 <th>Course</th>
+<th>UG No</th>
+<th>Year</th>
+<th>Attendance %</th>
+<th>Gender</th>
+<th>Phone</th>
+<th>Email</th>
+<th>Location</th>
 <th>Action</th>
 </tr>
 </thead>
-<tbody id="studentTable"></tbody>
+<tbody id="t"></tbody>
 </table>
 
 </div>
 
-<div class="message" id="popupMsg">
-Date Of Birth first add then automatically added age
-</div>
-
 <script>
-let students = JSON.parse(localStorage.getItem("students")) || [];
 
-function saveData(){
-localStorage.setItem("students",JSON.stringify(students));
-document.getElementById("totalCount").innerText = students.length;
-}
+let students = JSON.parse(localStorage.getItem("db2")) || [];
+let editIndex = -1;
 
-function calculateAge(){
-let dob = document.getElementById("dob").value;
-if(!dob) return;
+const form = document.getElementById("f");
+const tableBody = document.getElementById("t");
+const button = document.getElementById("btn");
 
-let birth = new Date(dob);
-let today = new Date();
-let age = today.getFullYear() - birth.getFullYear();
+/* ===== Accurate Age Calculation ===== */
 
-let m = today.getMonth() - birth.getMonth();
-if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
-age--;
-}
+dob.addEventListener("change", function(){
 
-document.getElementById("age").value = age;
-}
+    let birthDate = new Date(this.value);
+    let today = new Date();
 
-function checkDOB(){
-let dob = document.getElementById("dob").value;
-if(!dob){
-let msg=document.getElementById("popupMsg");
-msg.style.display="block";
-setTimeout(()=>{
-msg.style.display="none";
-},3000);
-}
-}
+    let ageCalc = today.getFullYear() - birthDate.getFullYear();
+    let monthDiff = today.getMonth() - birthDate.getMonth();
 
-function displayStudents(list = students){
-let table=document.getElementById("studentTable");
-table.innerHTML="";
+    if(monthDiff < 0 || 
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())){
+        ageCalc--;
+    }
 
-list.forEach((s,i)=>{
-table.innerHTML+=`
-<tr>
-<td>${s.name}</td>
-<td>${s.age}</td>
-<td>${s.dob}</td>
-<td>${s.roll}</td>
-<td>${s.email}</td>
-<td>${s.phone}</td>
-<td>${s.location}</td>
-<td>${s.course}</td>
-<td>
-<button class="edit-btn" onclick="editStudent(${i})">Edit</button>
-<button class="delete-btn" onclick="deleteStudent(${i})">Delete</button>
-</td>
-</tr>`;
+    age.value = ageCalc;
 });
+
+/* ===== Display ===== */
+
+function display(){
+
+    tableBody.innerHTML = "";
+
+    students.forEach(function(stu,index){
+
+        tableBody.innerHTML += `
+        <tr>
+            <td>${stu.n}</td>
+            <td>${stu.dob}</td>
+            <td>${stu.age}</td>
+            <td>${stu.course}</td>
+            <td>${stu.ugno}</td>
+            <td>${stu.year}</td>
+            <td>${stu.att}%</td>
+            <td>${stu.gen}</td>
+            <td>${stu.ph}</td>
+            <td>${stu.em}</td>
+            <td>${stu.loc}</td>
+            <td>
+                <button class="edit" onclick="editStudent(${index})">Edit</button>
+                <button class="del" onclick="deleteStudent(${index})">Delete</button>
+            </td>
+        </tr>
+        `;
+    });
+
+    localStorage.setItem("db2", JSON.stringify(students));
 }
 
-function addStudent(){
-let name = document.getElementById("name").value;
-let age = document.getElementById("age").value;
-let dob = document.getElementById("dob").value;
-let roll = document.getElementById("roll").value;
-let email = document.getElementById("email").value;
-let phone = document.getElementById("phone").value;
-let location = document.getElementById("location").value;
-let course = document.getElementById("course").value;
+/* ===== Submit ===== */
 
-if(!name || !age || !dob || !roll || !email || !phone || !location || !course){
-alert("Fill all fields");
-return;
-}
+form.addEventListener("submit", function(e){
 
-students.push({name,age,dob,roll,email,phone,location,course});
-saveData();
-displayStudents();
+    e.preventDefault();
 
-document.querySelectorAll("input").forEach(i=>i.value="");
-document.getElementById("course").value="";
-}
+    let attendanceValue = parseInt(att.value);
+
+    if(attendanceValue < 0 || attendanceValue > 100){
+        alert("Attendance must be between 0 and 100 only!");
+        return;
+    }
+
+    let data = {
+        n:n.value,
+        dob:dob.value,
+        age:age.value,
+        course:course.value,
+        ugno:ugno.value,
+        year:year.value,
+        att:attendanceValue,
+        gen:gen.value,
+        ph:ph.value,
+        em:em.value,
+        loc:loc.value
+    };
+
+    if(editIndex === -1){
+        students.push(data);
+    }else{
+        students[editIndex] = data;
+        editIndex = -1;
+        button.textContent = "Add Student";
+    }
+
+    form.reset();
+    display();
+});
+
+/* ===== Edit ===== */
 
 function editStudent(i){
-let s=students[i];
 
-document.getElementById("name").value=s.name;
-document.getElementById("age").value=s.age;
-document.getElementById("dob").value=s.dob;
-document.getElementById("roll").value=s.roll;
-document.getElementById("email").value=s.email;
-document.getElementById("phone").value=s.phone;
-document.getElementById("location").value=s.location;
-document.getElementById("course").value=s.course;
+    let s = students[i];
 
-students.splice(i,1);
-saveData();
-displayStudents();
+    n.value=s.n;
+    dob.value=s.dob;
+    age.value=s.age;
+    course.value=s.course;
+    ugno.value=s.ugno;
+    year.value=s.year;
+    att.value=s.att;
+    gen.value=s.gen;
+    ph.value=s.ph;
+    em.value=s.em;
+    loc.value=s.loc;
+
+    editIndex=i;
+    button.textContent="Update Student";
 }
+
+/* ===== Delete ===== */
 
 function deleteStudent(i){
-students.splice(i,1);
-saveData();
-displayStudents();
+    if(confirm("Delete this student?")){
+        students.splice(i,1);
+        display();
+    }
 }
 
-function searchStudent(){
-let value=document.getElementById("search").value.toLowerCase();
+display();
 
-let filtered=students.filter(s=>
-s.name.toLowerCase().includes(value) ||
-s.roll.toLowerCase().includes(value)
-);
-
-displayStudents(filtered);
-}
-
-saveData();
-displayStudents();
 </script>
 
 </body>
