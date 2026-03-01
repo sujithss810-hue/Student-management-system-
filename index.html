@@ -1,305 +1,198 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Student Database</title>
+<title>Student Management</title>
 
 <style>
 body{
+    font-family: Arial, sans-serif;
+    background: MidnightBlue;
     margin:0;
-    font-family:Arial, sans-serif;
-    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:#ffffff;
+    padding:20px;
 }
 
-h2{
+h1{
     text-align:center;
-    padding:15px;
-    letter-spacing:1px;
-    color:#00e5ff;
+    color:white;
 }
 
 .container{
-    max-width:1100px;
+    max-width:900px;
     margin:auto;
-    padding:15px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
 }
 
 form{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:8px;
-    background:#16222a;
-    padding:15px;
-    border-radius:10px;
-    box-shadow:0 0 15px rgba(0,229,255,0.3);
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:20px;
 }
 
-input,select{
+input{
     padding:8px;
-    border:1px solid #00e5ff;
-    border-radius:6px;
-    background:#0f2027;
-    color:#fff;
-    font-size:13px;
-    outline:none;
-}
-
-input:focus,select:focus{
-    box-shadow:0 0 8px #00e5ff;
+    border:1px solid #ccc;
+    border-radius:5px;
 }
 
 button{
     padding:8px;
     border:none;
-    border-radius:6px;
+    background:#1e3c72;
+    color:white;
+    border-radius:5px;
     cursor:pointer;
-    font-weight:bold;
-    background:#00e5ff;
-    color:#000;
-    transition:0.3s;
 }
 
 button:hover{
-    background:#00bcd4;
+    background:#16305c;
 }
 
 table{
     width:100%;
-    margin-top:20px;
     border-collapse:collapse;
-    background:#16222a;
-    font-size:12px;
 }
 
-th,td{
-    padding:7px;
-    border:1px solid #0f2027;
+th, td{
+    border:1px solid #ccc;
+    padding:8px;
     text-align:center;
 }
 
 th{
-    background:#00bcd4;
-    color:#000;
-}
-
-tr:nth-child(even){
-    background:#1e2d38;
+    background:#1e3c72;
+    color:white;
 }
 
 .edit{
-    background:#4caf50;
-    color:#fff;
-    padding:4px 6px;
+    background:#28a745;
+    color:white;
 }
 
-.del{
-    background:#f44336;
-    color:#fff;
-    padding:4px 6px;
+.delete{
+    background:#dc3545;
+    color:white;
+}
+
+.search-box{
+    margin-bottom:15px;
 }
 
 @media(max-width:600px){
-    table{font-size:9px;}
+    form{
+        grid-template-columns:1fr;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<h2>Student Database Management</h2>
+<h1>Student Management Dashboard</h1>
 
 <div class="container">
 
-<form id="f">
-
-<input id="n" placeholder="Name" required>
-<input type="date" id="dob" required>
-<input id="age" placeholder="Age" readonly>
-
-<select id="course">
-<option value="">Select Course (Optional)</option>
-<option>BCA</option><option>BSc</option><option>BCom</option>
-<option>BA</option><option>BBA</option><option>BE</option>
-<option>BTech</option><option>MCA</option><option>MSc</option>
-<option>MCom</option><option>MA</option><option>MBA</option>
-<option>Diploma</option><option>Pharmacy</option><option>Nursing</option>
-</select>
-
-<input id="ugno" placeholder="UG No" required>
-<input id="year" placeholder="Passing Year" required>
-
-<!-- Attendance validation added -->
-<input type="number" id="att" placeholder="Attendance %" min="0" max="100" required>
-
-<select id="gen" required>
-<option value="">Select Gender</option>
-<option>Male</option>
-<option>Female</option>
-<option>Other</option>
-</select>
-
-<input id="ph" placeholder="Phone No" required>
-<input id="em" placeholder="Email" required>
-<input id="loc" placeholder="Location" required>
-
-<button id="btn">Add Student</button>
-
+<form id="studentForm">
+    <input type="text" id="name" placeholder="Student Name" required>
+    <input type="text" id="roll" placeholder="Roll Number" required>
+    <input type="number" id="age" placeholder="Age" required>
+    <input type="text" id="course" placeholder="Course" required>
+    <button type="submit">Save</button>
 </form>
 
+<div class="search-box">
+    <input type="text" id="search" placeholder="Search by Name or Roll">
+</div>
+
 <table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Date of Birth</th>
-<th>Age</th>
-<th>Course</th>
-<th>UG No</th>
-<th>Year</th>
-<th>Attendance %</th>
-<th>Gender</th>
-<th>Phone</th>
-<th>Email</th>
-<th>Location</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="t"></tbody>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Roll No</th>
+            <th>Age</th>
+            <th>Course</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
 </table>
 
 </div>
 
 <script>
-
-let students = JSON.parse(localStorage.getItem("db2")) || [];
+let students = JSON.parse(localStorage.getItem("students")) || [];
 let editIndex = -1;
 
-const form = document.getElementById("f");
-const tableBody = document.getElementById("t");
-const button = document.getElementById("btn");
+const form = document.getElementById("studentForm");
+const tableBody = document.getElementById("tableBody");
+const searchInput = document.getElementById("search");
 
-/* ===== Accurate Age Calculation ===== */
-
-dob.addEventListener("change", function(){
-
-    let birthDate = new Date(this.value);
-    let today = new Date();
-
-    let ageCalc = today.getFullYear() - birthDate.getFullYear();
-    let monthDiff = today.getMonth() - birthDate.getMonth();
-
-    if(monthDiff < 0 || 
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())){
-        ageCalc--;
-    }
-
-    age.value = ageCalc;
-});
-
-/* ===== Display ===== */
-
-function display(){
-
+function displayStudents(data = students){
     tableBody.innerHTML = "";
-
-    students.forEach(function(stu,index){
-
+    data.forEach((student,index)=>{
         tableBody.innerHTML += `
         <tr>
-            <td>${stu.n}</td>
-            <td>${stu.dob}</td>
-            <td>${stu.age}</td>
-            <td>${stu.course}</td>
-            <td>${stu.ugno}</td>
-            <td>${stu.year}</td>
-            <td>${stu.att}%</td>
-            <td>${stu.gen}</td>
-            <td>${stu.ph}</td>
-            <td>${stu.em}</td>
-            <td>${stu.loc}</td>
+            <td>${student.name}</td>
+            <td>${student.roll}</td>
+            <td>${student.age}</td>
+            <td>${student.course}</td>
             <td>
                 <button class="edit" onclick="editStudent(${index})">Edit</button>
-                <button class="del" onclick="deleteStudent(${index})">Delete</button>
+                <button class="delete" onclick="deleteStudent(${index})">Delete</button>
             </td>
-        </tr>
-        `;
+        </tr>`;
     });
-
-    localStorage.setItem("db2", JSON.stringify(students));
 }
 
-/* ===== Submit ===== */
-
-form.addEventListener("submit", function(e){
-
+form.addEventListener("submit",function(e){
     e.preventDefault();
 
-    let attendanceValue = parseInt(att.value);
-
-    if(attendanceValue < 0 || attendanceValue > 100){
-        alert("Attendance must be between 0 and 100 only!");
-        return;
-    }
-
-    let data = {
-        n:n.value,
-        dob:dob.value,
-        age:age.value,
-        course:course.value,
-        ugno:ugno.value,
-        year:year.value,
-        att:attendanceValue,
-        gen:gen.value,
-        ph:ph.value,
-        em:em.value,
-        loc:loc.value
-    };
+    const name = document.getElementById("name").value;
+    const roll = document.getElementById("roll").value;
+    const age = document.getElementById("age").value;
+    const course = document.getElementById("course").value;
 
     if(editIndex === -1){
-        students.push(data);
+        students.push({name,roll,age,course});
     }else{
-        students[editIndex] = data;
+        students[editIndex] = {name,roll,age,course};
         editIndex = -1;
-        button.textContent = "Add Student";
     }
 
+    localStorage.setItem("students",JSON.stringify(students));
     form.reset();
-    display();
+    displayStudents();
 });
 
-/* ===== Edit ===== */
-
-function editStudent(i){
-
-    let s = students[i];
-
-    n.value=s.n;
-    dob.value=s.dob;
-    age.value=s.age;
-    course.value=s.course;
-    ugno.value=s.ugno;
-    year.value=s.year;
-    att.value=s.att;
-    gen.value=s.gen;
-    ph.value=s.ph;
-    em.value=s.em;
-    loc.value=s.loc;
-
-    editIndex=i;
-    button.textContent="Update Student";
+function editStudent(index){
+    const s = students[index];
+    document.getElementById("name").value = s.name;
+    document.getElementById("roll").value = s.roll;
+    document.getElementById("age").value = s.age;
+    document.getElementById("course").value = s.course;
+    editIndex = index;
 }
 
-/* ===== Delete ===== */
-
-function deleteStudent(i){
+function deleteStudent(index){
     if(confirm("Delete this student?")){
-        students.splice(i,1);
-        display();
+        students.splice(index,1);
+        localStorage.setItem("students",JSON.stringify(students));
+        displayStudents();
     }
 }
 
-display();
+searchInput.addEventListener("input",function(){
+    const value = this.value.toLowerCase();
+    const filtered = students.filter(s =>
+        s.name.toLowerCase().includes(value) ||
+        s.roll.toLowerCase().includes(value)
+    );
+    displayStudents(filtered);
+});
 
+displayStudents();
 </script>
 
 </body>
